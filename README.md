@@ -1,4 +1,4 @@
-## 使用Vue-CLI3搭建项目, 我都做了哪些事情?
+## 使用Vue-CLI3搭建移动端开发项目, 我都做了哪些事情?
 
 ### 安装vue-cli
 ```bash
@@ -72,6 +72,16 @@ module.exports = {
     }
   }
 };
+```
+
+### 配置生产环境nginx反向代理
+```bash
+# nginx.conf
+  # 如果是/api开头的请求,则反向代理到其他服务器
+  location /api {
+      rewrite ^/api/(.*)$ /$1 break; # 重新路径名,把/api换成/
+      proxy_pass http://api.youdomain.com; # 接口地址
+  }
 ```
 
 ---
