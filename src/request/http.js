@@ -6,19 +6,16 @@ import axios from "axios";
 import Qs from "qs";
 import { Toast } from "vant";
 
-// 创建axios实例
-var instance = axios.create({
-  timeout: 20000, // 超时时间
+let instance = axios.create({
+  // 发送前, 修改请求数据, Content-Type会根据修改后的数据自动设置
   transformRequest: [
-    function(data) {
+    function(data, headers) {
+      // return Qs.stringify(data);
+      // return JSON.stringify(data);
       return data;
     }
   ]
 });
-
-// POST请求默认Content-Type值
-axios.defaults.headers.post["Content-Type"] =
-  "application/x-www-form-urlencoded";
 
 /**
  * 请求拦截器
@@ -27,33 +24,15 @@ axios.defaults.headers.post["Content-Type"] =
 instance.interceptors.request.use(
   config => {
     console.log("请求拦截器", config);
+    config.withCredentials = false;
     Toast.loading({
       message: "加载中...",
       forbidClick: true,
       duration: 0
     });
-    if (config.method.toLowerCase() === "post") {
-      const contentType = config.headers["Content-Type"];
-
-      // 根据Content-Type转换data格式
-      if (contentType) {
-        if (contentType.includes("multipart")) {
-          // 类型 'multipart/form-data;'
-          // 多用于上传文件
-        } else if (contentType.includes("json")) {
-          // 类型 'application/json;'
-          // 服务器收到JSON字符串 "{name:"Tom",age:"18"}"
-          config.data = JSON.stringify(config.data);
-        } else {
-          // 类型 'application/x-www-form-urlencoded;'
-          // 服务器收到的数据 name=Tom&age=18
-          config.data = Qs.stringify(config.data);
-        }
-      }
-    }
     // token放入请求头Authorization中
     // token推荐从vuex中取
-    config.headers.Authorization = localStorage.getItem("token") || "";
+    // config.headers.Authorization = localStorage.getItem("token") || "";
     return config;
   },
   error => Promise.error(error)
