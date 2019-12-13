@@ -3,18 +3,16 @@
  * 请求拦截、响应拦截、错误统一处理
  */
 import axios from "axios";
-import Qs from "qs";
+// import Qs from "qs";
 import { Toast } from "vant";
 
 let instance = axios.create({
-  // 发送前, 修改请求数据, Content-Type会根据修改后的数据自动设置
-  transformRequest: [
-    function(data, headers) {
-      // return Qs.stringify(data);
-      // return JSON.stringify(data);
-      return data;
-    }
-  ]
+  // 如果要使用Content-Type:application/x-www-form-urlencoded; 打开这里的注释即可
+  // transformRequest: [
+  //   function(data, headers) {
+  //     return Qs.stringify(data);
+  //   }
+  // ]
 });
 
 /**
